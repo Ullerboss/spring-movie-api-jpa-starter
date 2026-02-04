@@ -1,6 +1,10 @@
 package ek.osnb.starter.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ManyToAny;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Movie {
@@ -11,16 +15,29 @@ public class Movie {
     private String title;
     private Integer releaseYear;
     private String genre;
+
     @Embedded
     private Rating rating;
 
+    @ManyToAny
+    @JoinTable(
+            name = "movie_actor",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "actor_id")
+    )
+    private List<Actor> actors = new ArrayList<>();
+
+
+    // TODO: Add getter and setter for actors list
+
     public Movie() {}
 
-    public Movie(String title, Integer releaseYear, String genre, Rating rating) {
+    public Movie(String title, Integer releaseYear, String genre, Rating rating, List<Actor> actors) {
         this.title = title;
         this.releaseYear = releaseYear;
         this.genre = genre;
         this.rating = rating;
+        this.actors = actors;
     }
 
     public Long getId() {
@@ -61,5 +78,13 @@ public class Movie {
 
     public void setRating(Rating rating) {
         this.rating = rating;
+    }
+
+    public List<Actor> getActors() {
+        return actors;
+    }
+
+    public void setActors(List<Actor> actors) {
+        this.actors = actors;
     }
 }
